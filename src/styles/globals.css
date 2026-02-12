@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 27, 42, 74;
+  --background-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* G703 Table specific styles */
+.g703-table {
+  @apply w-full border-collapse;
+}
+
+.g703-table th,
+.g703-table td {
+  @apply border border-gray-300 px-2 py-1.5 text-sm;
+}
+
+.g703-table th {
+  @apply bg-navy-900 text-white font-semibold text-xs;
+}
+
+.g703-table td {
+  @apply bg-white;
+}
+
+.g703-table tr:nth-child(even) td {
+  @apply bg-gray-50;
+}
+
+/* Highlight user input columns */
+.g703-table td.user-input {
+  @apply bg-blue-50;
+}
+
+.g703-table td.user-input:focus-within {
+  @apply bg-blue-100 ring-2 ring-blue-400 ring-inset;
+}
+
+/* Currency input alignment */
+.currency-input {
+  @apply text-right font-mono;
+}
+
+/* Percentage display colors */
+.percent-normal {
+  @apply text-green-700;
+}
+
+.percent-warning {
+  @apply text-yellow-600 font-semibold;
+}
+
+.percent-danger {
+  @apply text-red-600 font-bold;
+}
+
+/* PDF-like styling for previews */
+.pdf-preview {
+  @apply bg-white shadow-lg border border-gray-200;
+  font-family: 'Times New Roman', serif;
+}
+
+/* Button focus states */
+button:focus-visible {
+  @apply outline-none ring-2 ring-construction-500 ring-offset-2;
+}
+
+/* Input focus states */
+input:focus,
+select:focus,
+textarea:focus {
+  @apply outline-none ring-2 ring-navy-500 ring-offset-0;
+}
+
+/* Sticky table headers */
+.sticky-header th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Freeze first two columns for horizontal scroll */
+.freeze-columns td:nth-child(1),
+.freeze-columns th:nth-child(1),
+.freeze-columns td:nth-child(2),
+.freeze-columns th:nth-child(2) {
+  position: sticky;
+  z-index: 5;
+  background: inherit;
+}
+
+.freeze-columns td:nth-child(1),
+.freeze-columns th:nth-child(1) {
+  left: 0;
+}
+
+.freeze-columns td:nth-child(2),
+.freeze-columns th:nth-child(2) {
+  left: 60px;
+}
+
+/* Form validation states */
+.input-error {
+  @apply border-red-500 bg-red-50;
+}
+
+.input-success {
+  @apply border-green-500 bg-green-50;
+}
+
+/* Loading skeleton animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Toast overrides */
+.toast-success {
+  @apply bg-green-600 text-white;
+}
+
+.toast-error {
+  @apply bg-red-600 text-white;
+}
