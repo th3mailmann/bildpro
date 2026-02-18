@@ -45,9 +45,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-navy-900 leading-tight">
-              Stop Losing Money on{' '}mkdir -p src/app/forgot-password src/app/terms src/app/privacy src/app/contact
-              touch src/app/forgot-password/page.tsx src/app/terms/page.tsx src/app/privacy/page.tsx src/app/contact/page.tsx
-              
+              Stop Losing Money on{' '}
               <span className="text-construction-500">Rejected Pay Apps</span>
             </h1>
             <p className="mt-6 text-xl text-gray-600 max-w-2xl mx-auto">
