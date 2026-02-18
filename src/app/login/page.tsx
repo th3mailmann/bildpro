@@ -47,14 +47,14 @@ export default function LoginPage() {
           <Building2 className="h-10 w-10 text-construction-500" />
           <span className="text-3xl font-bold text-navy-900">BildPro</span>
         </Link>
-        <h2 className="mt-6 text-center text-2xl font-bold text-navy-900">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-navy-900">
           Sign in to your account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Or{' '}
           <Link
             href="/signup"
-            className="font-medium text-construction-500 hover:text-construction-600"
+            className="font-medium text-construction-600 hover:text-construction-500"
           >
             create a new account
           </Link>
@@ -62,14 +62,14 @@ export default function LoginPage() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-sm rounded-xl sm:px-10 border border-gray-200">
-          {error && (
-            <Alert type="error" className="mb-6">
-              {error}
-            </Alert>
-          )}
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <form className="space-y-6" onSubmit={handleLogin}>
+            {error && (
+              <Alert variant="destructive">
+                {error}
+              </Alert>
+            )}
 
-          <form onSubmit={handleLogin} className="space-y-6">
             <Input
               label="Email address"
               type="email"
@@ -89,20 +89,29 @@ export default function LoginPage() {
             />
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center">
+              <div className="flex items-center">
                 <input
+                  id="remember-me"
+                  name="remember-me"
                   type="checkbox"
                   className="h-4 w-4 text-navy-900 border-gray-300 rounded focus:ring-navy-500"
                 />
-                <span className="ml-2 text-sm text-gray-600">Remember me</span>
-              </label>
+                <label
+                  htmlFor="remember-me"
+                  className="ml-2 block text-sm text-gray-900"
+                >
+                  Remember me
+                </label>
+              </div>
 
-              <Link
-                href="/forgot-password"
-                className="text-sm font-medium text-construction-500 hover:text-construction-600"
-              >
-                Forgot password?
-              </Link>
+              <div className="text-sm">
+                <Link
+                  href="/forgot-password"
+                  className="font-medium text-construction-600 hover:text-construction-500"
+                >
+                  Forgot password?
+                </Link>
+              </div>
             </div>
 
             <Button type="submit" className="w-full" isLoading={isLoading}>
