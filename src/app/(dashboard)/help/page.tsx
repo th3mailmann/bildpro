@@ -1,13 +1,12 @@
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
-import { 
-  FileText, 
-  Calculator, 
-  CreditCard, 
-  Mail, 
+import {
+  FileText,
+  Calculator,
+  CreditCard,
+  Mail,
   HelpCircle,
   ExternalLink,
-  Book 
 } from 'lucide-react';
 
 export default function HelpPage() {
@@ -166,58 +165,23 @@ export default function HelpPage() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Book className="h-5 w-5" />
+            <ExternalLink className="h-5 w-5" />
             Resources
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-2 gap-4">
-            <a
-              href="https://www.aiacontracts.org/contract-documents/21621-2021-aia-g702-application-and-certificate-for-payment"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <ExternalLink className="h-5 w-5 text-gray-400" />
-              <div>
-                <p className="font-medium text-navy-900">Official AIA G702 Information</p>
-                <p className="text-sm text-gray-600">AIA Contract Documents website</p>
-              </div>
-            </a>
-
-            <a
-              href="#"
-              className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <FileText className="h-5 w-5 text-gray-400" />
-              <div>
-                <p className="font-medium text-navy-900">Sample Pay Application</p>
-                <p className="text-sm text-gray-600">Download a completed example</p>
-              </div>
-            </a>
-
-            <a
-              href="#"
-              className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <Calculator className="h-5 w-5 text-gray-400" />
-              <div>
-                <p className="font-medium text-navy-900">Retainage Calculator</p>
-                <p className="text-sm text-gray-600">Understand retainage calculations</p>
-              </div>
-            </a>
-
-            <a
-              href="#"
-              className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <Book className="h-5 w-5 text-gray-400" />
-              <div>
-                <p className="font-medium text-navy-900">Video Tutorials</p>
-                <p className="text-sm text-gray-600">Step-by-step walkthrough videos</p>
-              </div>
-            </a>
-          </div>
+          <a
+            href="https://www.aiacontracts.org/contract-documents/21621-2021-aia-g702-application-and-certificate-for-payment"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <ExternalLink className="h-5 w-5 text-gray-400" />
+            <div>
+              <p className="font-medium text-navy-900">Official AIA G702 Information</p>
+              <p className="text-sm text-gray-600">AIA Contract Documents website</p>
+            </div>
+          </a>
         </CardContent>
       </Card>
     </div>

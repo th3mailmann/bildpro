@@ -32,6 +32,7 @@ export default function ViewPayAppPage() {
   const [lineItems, setLineItems] = useState<PayAppLineItemInput[]>([]);
   const [loading, setLoading] = useState(true);
   const [generatingPDF, setGeneratingPDF] = useState(false);
+  const [subscriptionTier, setSubscriptionTier] = useState<string>('free');
 
   useEffect(() => {
     fetchData();
@@ -39,6 +40,19 @@ export default function ViewPayAppPage() {
 
   async function fetchData() {
     try {
+      // Fetch user subscription tier
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('subscription_tier')
+          .eq('id', user.id)
+          .single();
+        if (profile) {
+          setSubscriptionTier(profile.subscription_tier || 'free');
+        }
+      }
+
       // Fetch project
       const { data: projectData, error: projectError } = await supabase
         .from('projects')
@@ -144,7 +158,7 @@ export default function ViewPayAppPage() {
         g702Summary,
         g703Totals,
         changeOrders: (changeOrders || []) as ChangeOrder[],
-        isPro: true, // TODO: Get from user subscription
+        isPro: subscriptionTier !== 'free',
       });
     } catch (err) {
       console.error('Error generating PDF:', err);

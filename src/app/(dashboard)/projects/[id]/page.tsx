@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   Plus,
   FileText,
-  Edit,
   Calendar,
   DollarSign,
   Percent,
@@ -118,11 +117,6 @@ export default async function ProjectDetailPage({ params }: Props) {
           </div>
 
           <div className="flex gap-3">
-            <Link href={`/projects/${project.id}/edit`}>
-              <Button variant="outline" leftIcon={<Edit className="h-4 w-4" />}>
-                Edit Project
-              </Button>
-            </Link>
             <Link href={`/projects/${project.id}/pay-app/new`}>
               <Button leftIcon={<Plus className="h-4 w-4" />}>
                 Create Pay App

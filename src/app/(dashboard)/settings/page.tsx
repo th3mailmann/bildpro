@@ -424,9 +424,12 @@ export default function SettingsPage() {
             </div>
 
             <div className="pt-4 border-t">
-              <Button variant="outline" className="text-red-600 hover:bg-red-50">
-                Delete Account
-              </Button>
+              <p className="text-sm text-gray-500">
+                To delete your account, contact{' '}
+                <a href="mailto:support@bildpro.io" className="text-construction-500 hover:underline">
+                  support@bildpro.io
+                </a>.
+              </p>
             </div>
           </div>
         </CardContent>
