@@ -117,7 +117,7 @@ export default async function DashboardPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Next Billing Cycle</p>
-                <p className="text-2xl font-bold text-navy-900">{getDaysUntilBilling()} days</p>
+                <p className="text-2xl font-bold text-navy-900">{getDaysUntilBilling(25)} days</p>
               </div>
             </div>
           </CardContent>
