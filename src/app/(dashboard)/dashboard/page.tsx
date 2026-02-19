@@ -16,7 +16,9 @@ import type { Project, PayApplication } from '@/lib/types';
 async function getDashboardData() {
   const supabase = await createClient();
 
-  const {
+  const {src/components/ui/Button.tsx
+    src/app/forgot-password/page.tsx
+    
     data: { user },
   } = await supabase.auth.getUser();
 

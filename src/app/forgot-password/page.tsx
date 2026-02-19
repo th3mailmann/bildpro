@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Building2, Mail, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Building2, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { Button, Input, Alert } from '@/components/ui';
 import { createClient } from '@/lib/supabase/client';
 
@@ -58,9 +58,11 @@ export default function ForgotPasswordPage() {
               <p className="text-sm text-gray-600 mb-6">
                 We've sent a password reset link to <strong>{email}</strong>.
               </p>
-              <Button asChild variant="outline" className="w-full">
-                <Link href="/login">Return to login</Link>
-              </Button>
+              <Link href="/login" className="block w-full">
+                <Button variant="outline" className="w-full">
+                  Return to login
+                </Button>
+              </Link>
             </div>
           ) : (
             <>
