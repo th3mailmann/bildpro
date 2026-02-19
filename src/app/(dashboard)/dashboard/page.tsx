@@ -142,8 +142,8 @@ export default async function DashboardPage() {
                       <p className="text-sm text-gray-500">{project.location}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-navy-900">{formatCurrency(project.contract_value)}</p>
-                      <Badge variant="outline" className="mt-1">
+                      <p className="default-bold text-navy-900">{formatCurrency(project.contract_value)}</p>
+                      <Badge variant="default" className="mt-1">
                         {project.status}
                       </Badge>
                     </div>
