@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
               </div>
               <h3 className="text-lg font-medium text-navy-900 mb-2">Check your email</h3>
               <p className="text-sm text-gray-600 mb-6">
-                We've sent a password reset link to <strong>{email}</strong>.
+                We&apos;ve sent a password reset link to <strong>{email}</strong>.
               </p>
               <Link href="/login" className="block w-full">
                 <Button variant="outline" className="w-full">

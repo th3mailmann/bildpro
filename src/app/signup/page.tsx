@@ -34,6 +34,7 @@ export default function SignUpPage() {
 
     try {
       const supabase = createClient();
+      
       // Create auth user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
@@ -57,6 +58,23 @@ export default function SignUpPage() {
         }
       }
 
+      // Check if user signed up from a pricing plan link
+      const searchParams = new URLSearchParams(window.location.search);
+      const plan = searchParams.get('plan');
+
+      if (plan === 'pro' || plan === 'business') {
+        const res = await fetch('/api/stripe/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tier: plan }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+          return;
+        }
+      }
+
       router.push('/dashboard');
       router.refresh();
     } catch (err) {
@@ -73,14 +91,14 @@ export default function SignUpPage() {
           <Building2 className="h-10 w-10 text-construction-500" />
           <span className="text-3xl font-bold text-navy-900">BildPro</span>
         </Link>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-navy-900">
+        <h2 className="mt-6 text-center text-2xl font-bold text-navy-900">
           Create your free account
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Already have an account?{' '}
           <Link
             href="/login"
-            className="font-medium text-construction-600 hover:text-construction-500"
+            className="font-medium text-construction-500 hover:text-construction-600"
           >
             Sign in
           </Link>
@@ -88,14 +106,14 @@ export default function SignUpPage() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSignUp}>
-            {error && (
-              <Alert variant="destructive">
-                {error}
-              </Alert>
-            )}
+        <div className="bg-white py-8 px-4 shadow-sm rounded-xl sm:px-10 border border-gray-200">
+          {error && (
+            <Alert type="error" className="mb-6">
+              {error}
+            </Alert>
+          )}
 
+          <form onSubmit={handleSignUp} className="space-y-6">
             <Input
               label="Company Name"
               type="text"
@@ -133,13 +151,13 @@ export default function SignUpPage() {
               autoComplete="new-password"
             />
 
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-600">
               By signing up, you agree to our{' '}
-              <Link href="/terms" className="text-navy-900 hover:underline">
+              <Link href="/terms" className="text-construction-500 hover:underline">
                 Terms of Service
               </Link>{' '}
               and{' '}
-              <Link href="/privacy" className="text-navy-900 hover:underline">
+              <Link href="/privacy" className="text-construction-500 hover:underline">
                 Privacy Policy
               </Link>
               .
@@ -150,10 +168,8 @@ export default function SignUpPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500">
-              Start with 2 free projects • No credit card required
-            </p>
+          <div className="mt-6 text-center text-sm text-gray-500">
+            Start with 2 free projects • No credit card required
           </div>
         </div>
       </div>

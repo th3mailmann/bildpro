@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect, notFound } from 'next/navigation';
 import NewPayAppClient from '@/components/NewPayAppClient';
-import type { Project, ScheduleOfValuesItem, ChangeOrder, PayApplication } from '@/lib/types';
+import type { Project, ScheduleOfValuesItem, ChangeOrder, PayApplication, SubscriptionTier } from '@/lib/types';
 
 interface Props {
   params: { id: string };
@@ -17,6 +17,13 @@ async function getPayAppData(projectId: string) {
   if (!user) {
     redirect('/login');
   }
+
+  // Get user profile for subscription info
+  const { data: profile } = await supabase
+    .from('users')
+    .select('subscription_tier, company_name, company_address, company_logo_url')
+    .eq('id', user.id)
+    .single();
 
   // Get project
   const { data: project, error } = await supabase
@@ -78,6 +85,10 @@ async function getPayAppData(projectId: string) {
     changeOrders: (changeOrders || []) as ChangeOrder[],
     previousPayApps: (payApps || []) as PayApplication[],
     lastPayAppLineItems,
+    subscriptionTier: (profile?.subscription_tier || 'free') as SubscriptionTier,
+    companyName: profile?.company_name || '',
+    companyAddress: profile?.company_address || '',
+    companyLogoUrl: profile?.company_logo_url || null,
   };
 }
 

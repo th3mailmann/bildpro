@@ -36,11 +36,12 @@ export async function generatePayAppPDF(options: GeneratePDFOptions): Promise<vo
     isPro,
     companyName = 'Contractor',
     companyAddress = '',
+    companyLogoUrl,
   } = options;
 
   // Create G702 PDF (Portrait)
   const g702 = new jsPDF('portrait', 'pt', 'letter');
-  generateG702Page(g702, {
+  await generateG702Page(g702, {
     project,
     applicationNumber,
     periodFrom,
@@ -50,6 +51,7 @@ export async function generatePayAppPDF(options: GeneratePDFOptions): Promise<vo
     isPro,
     companyName,
     companyAddress,
+    companyLogoUrl,
   });
 
   // Create G703 PDF (Landscape)
@@ -81,9 +83,10 @@ interface G702Options {
   isPro: boolean;
   companyName: string;
   companyAddress: string;
+  companyLogoUrl?: string;
 }
 
-function generateG702Page(doc: jsPDF, options: G702Options): void {
+async function generateG702Page(doc: jsPDF, options: G702Options): Promise<void> {
   const {
     project,
     applicationNumber,
@@ -94,11 +97,24 @@ function generateG702Page(doc: jsPDF, options: G702Options): void {
     isPro,
     companyName,
     companyAddress,
+    companyLogoUrl,
   } = options;
 
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 40;
   let y = margin;
+
+  // Company logo (top-right)
+  if (companyLogoUrl) {
+    try {
+      const response = await fetch(companyLogoUrl);
+      const blob = await response.blob();
+      const base64 = await blobToBase64(blob);
+      doc.addImage(base64, 'PNG', pageWidth - margin - 50, margin, 50, 50);
+    } catch (e) {
+      console.error('Failed to load logo for PDF:', e);
+    }
+  }
 
   // Title
   doc.setFontSize(16);
@@ -509,6 +525,15 @@ function generateG703Pages(doc: jsPDF, options: G703Options): void {
       });
     }
   }
+}
+
+function blobToBase64(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
 }
 
 function formatDate(dateStr: string): string {

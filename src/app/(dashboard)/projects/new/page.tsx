@@ -146,6 +146,27 @@ export default function NewProjectPage() {
         return;
       }
 
+      // Check subscription limits
+      const { data: profile } = await supabase
+        .from('users')
+        .select('subscription_tier')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.subscription_tier === 'free') {
+        const { count } = await supabase
+          .from('projects')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('status', 'active');
+
+        if ((count || 0) >= 2) {
+          toast.error('Free plan is limited to 2 active projects. Upgrade to Pro for unlimited.');
+          router.push('/settings');
+          return;
+        }
+      }
+
       // Create project
       const { data: project, error: projectError } = await supabase
         .from('projects')

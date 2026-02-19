@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button, Input, Card, CardContent, CardHeader, CardTitle, Badge, Alert } from '@/components/ui';
 import { createClient } from '@/lib/supabase/client';
 import { User, Building2, CreditCard, FileText } from 'lucide-react';
@@ -11,6 +11,10 @@ export default function SettingsPage() {
   const [user, setUser] = useState<UserType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form state
   const [companyName, setCompanyName] = useState('');
@@ -19,6 +23,16 @@ export default function SettingsPage() {
 
   useEffect(() => {
     loadUserData();
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success') === 'true') {
+      toast.success('Subscription activated! Welcome to your new plan.');
+      window.history.replaceState({}, '', '/settings');
+    }
+    if (params.get('canceled') === 'true') {
+      toast('Checkout canceled.', { icon: 'ℹ️' });
+      window.history.replaceState({}, '', '/settings');
+    }
   }, []);
 
   const loadUserData = async () => {
@@ -38,6 +52,7 @@ export default function SettingsPage() {
         setCompanyName(profile.company_name || '');
         setCompanyAddress(profile.company_address || '');
         setCompanyPhone(profile.company_phone || '');
+        setLogoUrl(profile.company_logo_url || null);
       }
     }
 
@@ -71,6 +86,78 @@ export default function SettingsPage() {
       toast.error('Failed to update profile');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleCheckout = async (tier: 'pro' | 'business') => {
+    setIsCheckoutLoading(true);
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error(data.error || 'Something went wrong');
+      }
+    } catch {
+      toast.error('Failed to start checkout');
+    } finally {
+      setIsCheckoutLoading(false);
+    }
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!['image/png', 'image/jpeg'].includes(file.type)) {
+      toast.error('Only PNG and JPG files are allowed');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('File must be under 2MB');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('logo', file);
+
+      const res = await fetch('/api/logo/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        setLogoUrl(data.url);
+        toast.success('Logo uploaded successfully');
+      } else {
+        toast.error(data.error || 'Failed to upload logo');
+      }
+    } catch {
+      toast.error('Failed to upload logo');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      const res = await fetch('/api/stripe/portal', { method: 'POST' });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error(data.error || 'Something went wrong');
+      }
+    } catch {
+      toast.error('Failed to open billing portal');
     }
   };
 
@@ -165,7 +252,7 @@ export default function SettingsPage() {
           {user?.subscription_tier === 'free' ? (
             <div className="space-y-4">
               <Alert type="info">
-                You're on the <strong>Free plan</strong> with 2 active projects.
+                You&apos;re on the <strong>Free plan</strong> with 2 active projects.
                 Upgrade to Pro for unlimited projects, no watermarks, and more features.
               </Alert>
 
@@ -179,7 +266,12 @@ export default function SettingsPage() {
                     <li>✓ Change order tracking</li>
                     <li>✓ PDF package bundling</li>
                   </ul>
-                  <Button className="w-full mt-4" variant="secondary">
+                  <Button
+                    className="w-full mt-4"
+                    variant="secondary"
+                    onClick={() => handleCheckout('pro')}
+                    isLoading={isCheckoutLoading}
+                  >
                     Upgrade to Pro
                   </Button>
                 </div>
@@ -193,8 +285,13 @@ export default function SettingsPage() {
                     <li>✓ Billing reminders</li>
                     <li>✓ Priority support</li>
                   </ul>
-                  <Button className="w-full mt-4" variant="outline">
-                    Contact Sales
+                  <Button
+                    className="w-full mt-4"
+                    variant="outline"
+                    onClick={() => handleCheckout('business')}
+                    isLoading={isCheckoutLoading}
+                  >
+                    Upgrade to Business
                   </Button>
                 </div>
               </div>
@@ -210,7 +307,7 @@ export default function SettingsPage() {
                     ${user?.subscription_tier === 'pro' ? '49' : '99'}/month
                   </p>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleManageSubscription}>
                   Manage Subscription
                 </Button>
               </div>
@@ -235,23 +332,59 @@ export default function SettingsPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Company Logo
               </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                <FileText className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                <p className="text-sm text-gray-600">
-                  Drag and drop your logo, or click to browse
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  PNG, JPG up to 2MB. Will appear on your G702 documents.
-                </p>
-                <Button variant="outline" size="sm" className="mt-4">
-                  Upload Logo
-                </Button>
-              </div>
+              {user?.subscription_tier !== 'free' ? (
+                <>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg"
+                    className="hidden"
+                    onChange={handleLogoUpload}
+                  />
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    {logoUrl ? (
+                      <img
+                        src={logoUrl}
+                        alt="Company logo"
+                        className="h-16 mx-auto mb-3 object-contain"
+                      />
+                    ) : (
+                      <FileText className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                    )}
+                    <p className="text-sm text-gray-600">
+                      {logoUrl ? 'Click below to replace your logo' : 'Drag and drop your logo, or click to browse'}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      PNG, JPG up to 2MB. Will appear on your G702 documents.
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-4"
+                      onClick={() => fileInputRef.current?.click()}
+                      isLoading={isUploading}
+                    >
+                      {logoUrl ? 'Replace Logo' : 'Upload Logo'}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <FileText className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm text-gray-600">
+                      Upload your company logo to appear on G702 documents.
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      PNG, JPG up to 2MB.
+                    </p>
+                  </div>
+                  <Alert type="info">
+                    Logo upload requires a Pro or Business subscription.
+                  </Alert>
+                </>
+              )}
             </div>
-
-            <Alert type="info">
-              Logo upload requires a Pro or Business subscription.
-            </Alert>
           </div>
         </CardContent>
       </Card>

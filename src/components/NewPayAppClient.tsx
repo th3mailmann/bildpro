@@ -24,6 +24,7 @@ import type {
   PayApplication,
   PayAppLineItemInput,
   G702Summary as G702SummaryType,
+  SubscriptionTier,
 } from '@/lib/types';
 
 interface NewPayAppClientProps {
@@ -38,6 +39,10 @@ interface NewPayAppClientProps {
     materials_stored: number;
     total_completed_and_stored: number;
   }>;
+  subscriptionTier: SubscriptionTier;
+  companyName: string;
+  companyAddress: string;
+  companyLogoUrl: string | null;
 }
 
 export default function NewPayAppClient({
@@ -46,6 +51,10 @@ export default function NewPayAppClient({
   changeOrders,
   previousPayApps,
   lastPayAppLineItems,
+  subscriptionTier,
+  companyName,
+  companyAddress,
+  companyLogoUrl,
 }: NewPayAppClientProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -186,7 +195,10 @@ export default function NewPayAppClient({
         g702Summary,
         g703Totals,
         changeOrders: changeOrders.filter((co) => co.status === 'approved'),
-        isPro: true, // TODO: Check user subscription
+        isPro: subscriptionTier !== 'free',
+        companyName,
+        companyAddress,
+        companyLogoUrl: companyLogoUrl || undefined,
       });
 
       toast.success('PDF generated successfully');
@@ -405,7 +417,7 @@ export default function NewPayAppClient({
           onMarkComplete={handleMarkComplete}
         />
         <p className="text-sm text-gray-500 mt-2">
-          💡 Tip: Tab key moves down Column E for fast data entry. Click "100%" to bill remaining balance.
+          💡 Tip: Tab key moves down Column E for fast data entry. Click &ldquo;100%&rdquo; to bill remaining balance.
         </p>
       </div>
 

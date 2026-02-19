@@ -70,7 +70,7 @@ export default function HelpPage() {
               </h4>
               <p className="text-gray-600 text-sm">
                 First, create a project and set up your Schedule of Values. Then, from the
-                project page, click "Create Pay App" to start your first payment application.
+                project page, click &ldquo;Create Pay App&rdquo; to start your first payment application.
                 Enter your work completed this period for each line item, and the system will
                 automatically calculate totals, percentages, and retainage.
               </p>
@@ -78,7 +78,7 @@ export default function HelpPage() {
 
             <div className="py-4">
               <h4 className="font-semibold text-navy-900 mb-2">
-                What's the difference between G702 and G703?
+                What&apos;s the difference between G702 and G703?
               </h4>
               <p className="text-gray-600 text-sm">
                 The G702 is the main Application and Certificate for Payment — it shows the
@@ -94,8 +94,8 @@ export default function HelpPage() {
               </h4>
               <p className="text-gray-600 text-sm">
                 When you create a new pay application, BildPro automatically pulls in all
-                previous billing data. The "Work Completed — Previous Applications" column
-                shows what you've already billed. You only need to enter the new work
+                previous billing data. The &ldquo;Work Completed — Previous Applications&rdquo; column
+                shows what you&apos;ve already billed. You only need to enter the new work
                 completed this period.
               </p>
             </div>
@@ -148,7 +148,7 @@ export default function HelpPage() {
         </CardHeader>
         <CardContent>
           <p className="text-gray-600 mb-4">
-            Can't find what you're looking for? Our support team is here to help.
+            Can&apos;t find what you&apos;re looking for? Our support team is here to help.
           </p>
           <div className="flex gap-4">
             <a
